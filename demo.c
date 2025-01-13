@@ -1,5 +1,5 @@
 #include <stdio.h>
 int main(){
-	printf("demo c file");
+	printf("c file used in testing");
 	return 0;
 }
