@@ -15,71 +15,38 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Install Dependencies (Linux)
+    - name: Install g++ (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++ wget make dpkg-dev
+        sudo apt-get install -y g++
 
     - name: Compile Code (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        # Compile the C++ code
-        g++ -O0 -march=${{ github.event.release.tag }} -o crun crun.cc
+        g++ -O0 -march=native -o crun crun.cc
 
-    - name: Create .deb Package
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        VERSION=${{ github.event.release.tag }}
-        ARCH=amd64
-
-        # Prepare .deb package
-        mkdir -p debian/usr/bin
-        cp crun debian/usr/bin/
-        mkdir -p debian/DEBIAN
-        echo "Package: crun" > debian/DEBIAN/control
-        echo "Version: ${VERSION#?}" >> debian/DEBIAN/control  # Strip leading character from version if necessary
-        echo "Architecture: $ARCH" >> debian/DEBIAN/control
-        echo "Maintainer: hydrophobis <github.com/hydrophobis>" >> debian/DEBIAN/control
-        echo "Description: Compiles and runs C files in one command" >> debian/DEBIAN/control
-
-        # Build the .deb package
-        dpkg-deb --build debian crun_${VERSION}_${ARCH}.deb
-        if [ $? -ne 0 ]; then
-          echo "Error during dpkg-deb build."
-          exit 1
-        fi
-        mkdir -p /sources
-        mv crun_${VERSION}_${ARCH}.deb /sources
-
-    - name: Create install script
-      run: |
-        echo "#!/bin/bash" > install
-        echo "sudo dpkg -i crun_${{ github.event.release.tag }}_amd64.deb" >> install
-        echo "echo 'Installation complete.'" >> install
-        chmod +x install
-
-    - name: Upload .deb Package
+    - name: Upload Release Asset (Compiled Binary)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: /sources/crun_${{ github.event.release.tag }}_amd64.deb
-        asset_name: crun_${{ github.event.release.tag }}_amd64.deb
-        asset_content_type: application/x-debian-package
-
-    - name: Upload crun binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: crun
-        asset_name: crun
+        asset_path: ${{ 'crun' }}
+        asset_name: ${{ 'crun' }}
         asset_content_type: application/octet-stream
 
-    - name: Upload install script
+    - name: Upload `PKGBUILD` File
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: sources/PKGBUILD
+        asset_name: PKGBUILD
+        asset_content_type: text/plain
+
+    - name: Upload `install` File
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
