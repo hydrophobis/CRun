@@ -1,0 +1,3 @@
+wget https://github.com/hydrophobis/crun/blob/Beta/crun
+sudo cp crun /bin/crun
+echo "Install finished"
