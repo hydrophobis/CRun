@@ -38,7 +38,7 @@ jobs:
       run: |
         g++ -o crun.exe crun.cc
 
-    - name: Upload Release Asset
+    - name: Upload Release Asset (Compiled Binary)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,3 +47,23 @@ jobs:
         asset_path: ${{ matrix.os == 'windows-latest' && 'crun.exe' || 'crun' }}
         asset_name: ${{ matrix.os == 'windows-latest' && 'crun.exe' || 'crun' }}
         asset_content_type: application/octet-stream
+
+    - name: Upload `compile` File
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: compile
+        asset_name: compile
+        asset_content_type: text/plain
+
+    - name: Upload `install` File
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: install
+        asset_name: install
+        asset_content_type: text/plain
