@@ -25,8 +25,9 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         choco install mingw -y
-        echo "::add-path::C:\\ProgramData\\chocolatey\\bin"
-        echo "::add-path::C:\\Program Files\\mingw\\bin"
+      env:
+        PATH: C:\ProgramData\chocolatey\bin;C:\Program Files\mingw\bin;${{ env.PATH }}
+
 
     - name: Compile Code (Linux)
       if: matrix.os == 'ubuntu-latest'
