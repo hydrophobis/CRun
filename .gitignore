@@ -1,5 +1,7 @@
-PKGBUILD
-crun
 /.vscode
 /pkg
 /src
+/CRun
+/debian
+/appdir
+full_build

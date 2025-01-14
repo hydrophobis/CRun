@@ -1,0 +1,40 @@
+pkgname=CRun
+pkgver=v0.1.3
+pkgrel=1
+pkgdesc="Compiles and runs C files in one command"
+arch=('x86_64')
+url="https://github.com/hydrophobis/CRun"
+license=('GPL')
+depends=('gcc')
+source=("git+https://github.com/hydrophobis/CRun.git#tag=${pkgver}")
+sha256sums=('SKIP')
+
+build() {
+  read -p "Compile locally (L) or pull binary from GitHub (P): " char
+
+  if [[ "$char" == 'L' || "$char" == 'l' ]]; then
+    cd "$srcdir/$pkgname"
+    g++ -O0 -march=native -o crun crun.cc
+  elif [[ "$char" == 'P' || "$char" == 'p' ]]; then
+    owner="hydrophobis"
+    repo="crun"
+    echo "Getting the latest version"
+    latest_tag=$(curl -s "https://api.github.com/repos/$owner/$repo/tags" | jq -r '.[0].name')
+    if [[ "$latest_tag" == "null" ]]; then
+      echo "No versions found, aborting install"
+      exit 1
+    fi
+    echo "Installing $latest_tag"
+    wget "https://raw.githubusercontent.com/$owner/$repo/$latest_tag/crun.cc"
+    g++ -O0 -march=native -o crun crun.cc
+  else
+    echo "Invalid input, aborting."
+    exit 1
+  fi
+  rm ./PKGBUILD
+}
+
+package() {
+  cd "$srcdir/$pkgname"
+  install -Dm755 crun "$pkgdir/usr/bin/crun"
+}
