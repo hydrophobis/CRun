@@ -42,7 +42,14 @@ jobs:
         echo "Architecture: $ARCH" >> debian/DEBIAN/control
         echo "Maintainer: hydrophobis <github.com/hydrophobis>" >> debian/DEBIAN/control
         echo "Description: Compiles and runs C files in one command" >> debian/DEBIAN/control
+
+        # Build the .deb package
         dpkg-deb --build debian crun_${VERSION}_${ARCH}.deb
+        if [ $? -ne 0 ]; then
+          echo "Error during dpkg-deb build."
+          exit 1
+        fi
+        mkdir -p /sources
         mv crun_${VERSION}_${ARCH}.deb /sources
 
     - name: Create install script
