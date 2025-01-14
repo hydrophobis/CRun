@@ -41,8 +41,10 @@ if [ $NAME != "Arch Linux"]; then
 elif [ $NAME == "Arch Linux" ]; then 
   download_file "$PKGBUILD_URL" "PKGBUILD"
 
-# Install the .deb package if available
+
 if [ -f "crun" ]; then
+  sudo cp crun /bin/crun
+  rm crun
 else
   echo "No executable package found. Assuming PKGBUILD is installed."
   chmod +x PKGBUILD
