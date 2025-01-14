@@ -18,8 +18,6 @@ echo "Latest version: $LATEST_VERSION"
 # Define the download URLs for the AppImage, .deb, and other files
 BASE_URL="https://github.com/$OWNER/$REPO/releases/download/$LATEST_VERSION"
 
-APPIMAGE_URL="$BASE_URL/crun-x86_64.AppImage"
-DEB_URL="$BASE_URL/crun_${LATEST_VERSION}_x86-64.deb"
 PKGBUILD_URL="$BASE_URL/PKGBUILD"
 
 # Function to download a file from GitHub
@@ -38,33 +36,17 @@ else
 fi
 
 . /etc/os-release
-if [ $NAME == "Ubuntu" || $NAME == "Debian"]; then
-  download_file "$DEB_URL" "crun_${LATEST_VERSION}_amd64.deb"
+if [ $NAME != "Arch Linux"]; then
+  download_file "$BASE_URL/crun" "crun"
 elif [ $NAME == "Arch Linux" ]; then 
   download_file "$PKGBUILD_URL" "PKGBUILD"
 
-# Download the assets (AppImage, Deb, or binary)
-download_file "$APPIMAGE_URL" "crun-x86_64.AppImage"
-
-
-# Make the AppImage executable
-chmod +x crun-x86_64.AppImage
-
 # Install the .deb package if available
-if [ -f "crun_${LATEST_VERSION}_amd64.deb" ]; then
-  echo "Installing .deb package..."
-  sudo dpkg -i "crun_${LATEST_VERSION}_amd64.deb"
-  sudo apt-get install -f -y  # Fix missing dependencies
+if [ -f "crun" ]; then
 else
-  echo "No .deb package found. Skipping .deb installation."
+  echo "No executable package found. Assuming PKGBUILD is installed."
+  chmod +x PKGBUILD
+  ./PKGBUILD
 fi
 
-# Provide the user with the option to run the AppImage
-read -p "Do you want to run the AppImage now? (y/n): " choice
-if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
-  ./crun-x86_64.AppImage
-else
-  echo "You can run the AppImage later using './crun-x86_64.AppImage'."
-fi
-
-echo "Installation complete!"
+echo "Installation complete"
