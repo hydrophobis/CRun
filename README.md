@@ -1,3 +1,6 @@
-# crun
+# CRun
 I'm tired of compiling and running in 2 commands<br>
-Feel free to make a pull request
+Feel free to make a pull request<br>
+Main branch may be outdated. Download source code from releases
+
+**Not compatible with windows in its current state**
