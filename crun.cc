@@ -3,6 +3,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <cstring>
+#include <string>
 
 int main(int argc, char* argv[]){
 	std::string outfilename = "";
@@ -21,15 +22,20 @@ int main(int argc, char* argv[]){
 	char** inFile = argv;
 	std::string files = "";
 	for(int i = 0; i < sizeof(inFile)/8; i++){
-		std::string s(inFile[i + 1]);
-		files = files + s + " ";
+		std::string file = "";
+		for(int j = 0; inFile[i + 1][j] != '\0'; ++j){
+			if(inFile[i + 1][j] != ';'){
+				file += inFile[i + 1][j];
+			}
+		}
+		files = files + file + " ";
 	}
 	std::strcat(tmp, outfilename.c_str());
 	std::strcat(tmp, fileExtension);
 	std::strcat(tmp, " ");
 	std::strcat(tmp, files.c_str());
 
-	char compileCommand[100] = "gcc -o ";
+	char compileCommand[100] = "gcc -march=native -std=c99 -Wall -o ";
 
 	std::strcat(compileCommand, tmp);
 	std::cout << "Starting child process" << std::endl;
