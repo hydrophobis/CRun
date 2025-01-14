@@ -6,7 +6,7 @@ REPO="CRun"
 
 # Function to get the latest release from GitHub API
 get_latest_release() {
-  wget --silent "https://api.github.com/repos/$OWNER/$REPO/releases/latest" | 
+  wget "https://api.github.com/repos/$OWNER/$REPO/releases/latest" | 
   grep '"tag_name":' | 
   sed -E 's/.*"tag_name": "([^"]+)".*/\1/'
 }
