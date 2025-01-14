@@ -1,0 +1,49 @@
+name: Build and Publish for Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install g++
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++
+        
+    - name: Install g++ (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install mingw -y
+        echo "::add-path::C:\\ProgramData\\chocolatey\\bin"
+        echo "::add-path::C:\\Program Files\\mingw\\bin"
+
+    - name: Compile Code (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        g++ -o crun crun.cc
+
+    - name: Compile Code (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        g++ -o crun.exe crun.cc
+
+    - name: Upload Binary to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{ matrix.os == 'windows-latest' && 'crun.exe' || 'crun' }}
+        asset_name: ${{ matrix.os == 'windows-latest' && 'crun.exe' || 'crun' }}
+        asset_content_type: application/octet-stream
