@@ -41,12 +41,8 @@ int main(int argc, char* argv[]) {
                 std::cerr << COLOR_RED << "Error: " << COLOR_WHT << "Output file name missing after '-o'.\n";
                 return 1;
             }
-		} else if (std::string(argv[i]) == "-march"){
-			march = argv[i + 1];
-			i++;
-		} else if (std::string(argv[i]) == "-std"){
-			standard = argv[i + 1];
-			i++;
+		} else if (std::string(argv[i]) == "-u") {
+            system("crunu");
 		} else if ((std::string(argv[i]).find('-') == 0)){
 			extra_options += argv[i + 1];
             extra_options += " ";

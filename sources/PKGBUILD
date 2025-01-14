@@ -31,7 +31,6 @@ build() {
     echo "Invalid input, aborting."
     exit 1
   fi
-  rm ./PKGBUILD
 }
 
 package() {

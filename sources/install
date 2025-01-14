@@ -1,5 +1,4 @@
 #!/bin/bash
-
 VERSION=$1
 
 # Define repository info
@@ -50,7 +49,12 @@ else
   rm -r -f CRun
   rm -r -f pkg
   rm -r -f src
-  #rm PKGBUILD
+  rm PKGBUILD
+fi
+
+read -p "Install updater?(Without this the -u option will not work)(Y/N): " INPUT
+if [ $INPUT == 'Y' ]; then
+  sudo cp $0 /bin/crun_update && sudo chmod +x /bin/crun_update
 fi
 
 echo "Installation complete"
