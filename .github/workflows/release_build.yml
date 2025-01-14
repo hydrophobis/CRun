@@ -24,7 +24,7 @@ jobs:
     - name: Compile Code (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        g++ -O0 -o crun crun.cc
+        g++ -o crun crun.cc
 
     - name: Upload Release Asset (Compiled Binary)
       uses: actions/upload-release-asset@v1
